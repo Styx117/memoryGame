@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Memory game</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container">
+			<a class="navbar-brand" href="#">Styx's Memory game</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item active" style="position: relative;">
+						<a class="nav-link flash" href="https://discord.com/invite/NuDwUvE"><i class="fas fa-arrow-right bounceRight"></i> Join ATWD! <i class="fas fa-arrow-left bounceLeft"></i></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="row mb-5">
+			<div class="col text-center">
+				<h1>Welcome</h1>
+				<h5>This is a memory game that remembers what cards you've found even if you refresh. It's a memory memory game.</h5>
+				<h6>Select a difficulty</h6>
+				<select class="form-control difficultySelect">
+					<option value="12">Easy</option>
+					<option value="18">Normal</option>
+					<option value="24">Hard</option>
+				</select>
+			</div>
+
+		</div>
+		<div class="row gameHolder">
+		</div>
+		<button class="btn btn-danger restart m-auto d-block btn-lg">Restart</button><br>
+	</div>
+	<footer>
+		<h4>Thanks for visiting</h4>
+		<p>Thanks to <a href="https://disboard.org/server/729943368364326952">All things web development</a> for the challenge</p>
+	</footer>
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+	<script>
+		$(".restart").on("click",()=>{
+			createCookie("gamemap","");
+			createCookie("difficulty","");
+			startgame($(".difficultySelect").val());
+		});
+		var y;
+		
+		$(".difficultySelect").on("change",function(){
+			createCookie("difficulty",$(this).val())
+			startgame($(this).val());
+		})
+		function startgame(diff){
+			$(".gameHolder").html("");
+			y = diff;
+			arr = genRandomNums(y);
+			W = (y >= 18) ? "2" : "3";
+			for(i in arr){
+				$(".gameHolder").append(`
+					<div class="p-0 col-`+W+` gameCard" value="`+arr[i]+`">
+					<div class="holder">
+					<div class="front">
+
+					</div>
+					<div class="back">
+					<p class="num">`+arr[i]+`</p>
+					</div>
+					</div>
+
+
+					</div>
+					`);
+			}
+			setclickevents();
+		}
+		
+		function updateMap(){
+			if ($(".found").length >= y){
+				alert("Found them all");
+			}
+			var myarr = [];
+			$(".gameCard").each(function(){
+				var cardInfo = {};
+				num = $(this).attr("value");
+				found = ($(this).find(".holder").hasClass("found")) ? true : false;
+				cardInfo.num = num;
+				cardInfo.found = found;
+				myarr.push(cardInfo);
+			});
+			stringed = JSON.stringify(myarr);
+			createCookie('gamemap',stringed);
+		}
+		function genRandomNums(NOC){
+			arr = [];
+			amount = NOC / 2;
+			for (var i = 0; i < amount; i++) {
+				arr.push(i+1);
+				arr.push(i+1);
+			}
+			for (i = arr.length - 1; i > 0; i--) {
+				j = Math.floor(Math.random() * (i + 1));
+				x = arr[i];
+				arr[i] = arr[j];
+				arr[j] = x;
+			}
+			return arr;
+		}
+		function setclickevents(){	
+			$(".gameCard").on("click",function(){
+				if ($(".flip").length <= 1) {
+					$(this).find(".holder").addClass("flip");
+					if($(".flip").length == 2){
+						if($(".flip").first().parent().attr("value") != $(".flip").last().parent().attr("value")){
+							$(".gameCard").off("click");
+							setTimeout(function(){
+								$(".flip").removeClass("flip");
+								setclickevents();
+							},1500)
+						}
+						else{
+							$(".flip").addClass("found");
+							$(".flip").removeClass("flip");
+						}
+					}
+				}
+				updateMap();
+			});
+		}
+		function createCookie(name, value, days) {
+			var expires;
+			if (days) {
+				var date = new Date();
+				date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+				expires = "; expires=" + date.toGMTString();
+			}
+			else {
+				expires = "";
+			}
+			document.cookie = name + "=" + value + expires + "; path=/";
+		}
+
+		function getCookie(c_name) {
+			if (document.cookie.length > 0) {
+				c_start = document.cookie.indexOf(c_name + "=");
+				if (c_start != -1) {
+					c_start = c_start + c_name.length + 1;
+					c_end = document.cookie.indexOf(";", c_start);
+					if (c_end == -1) {
+						c_end = document.cookie.length;
+					}
+					return unescape(document.cookie.substring(c_start, c_end));
+				}
+			}
+			return "";
+		}
+		
+
+		$(document).ready(function(){
+			if (getCookie("difficulty") != "" && getCookie("difficulty") != null){
+				startgame(getCookie("difficulty"));
+				$(".difficultySelect").val(getCookie("difficulty"));
+			}
+			else{
+				startgame(12);
+			}
+
+			if (getCookie("gamemap") != "" && getCookie("gamemap") != null){
+				var map = JSON.parse(getCookie("gamemap"));
+				$(".gameCard").each(function(i){
+					$(this).attr("value",map[i].num);
+					$(this).find(".num").html(map[i].num);
+					if (map[i].found == true){
+						$(this).find(".holder").addClass("found");
+					}
+				})
+				
+			}
+		})
+
+	</script>
+</body>
+
+</html>

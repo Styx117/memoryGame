@@ -1,0 +1,114 @@
+@keyframes moveright {
+	0% {left:0px;}
+	50% {left:5px;}
+	100% {left:0px;}
+}
+@keyframes backgroundColorPalette {
+	0% {
+		color: #ee6055;
+	}
+	25% {
+		color: #60d394;
+	}
+	50% {
+		color: #aaf683;
+	}
+	75% {
+		color: #ffd97d;
+	}
+	100% {
+		color: #ff9b85;
+	}
+}
+footer{
+	background-color: #161616;
+	padding: 20px;
+	color: #fff;
+	text-align: center;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+}
+.flash{
+	font-size: 20px;
+	font-weight: bold;
+	animation-name: backgroundColorPalette;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-timing-function: linear; 
+}
+.bounceRight{
+	position: relative;
+	animation-name: moveright;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+}
+@keyframes moveleft {
+	0% {right:0px;}
+	50% {right:5px;}
+	100% {right:0px;}
+}
+.bounceLeft{
+	position: relative;
+	animation-name: moveleft;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+}
+
+.gameCard{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height:150px;
+	background-color: #34495e;
+	border:5px solid white;
+	border-radius: 10px;
+	perspective: 1000px;
+}
+
+.holder {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	transition: transform 0.6s;
+	transform-style: preserve-3d;
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.flip{
+	transform: rotateY(180deg);
+	}.found{
+		transform: rotateY(180deg);
+	}
+
+	.front, .back {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		-webkit-backface-visibility: hidden;
+		backface-visibility: hidden;
+	}
+
+	.back {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: #c83839;
+		border-radius: 5px;
+		transform: rotateY(180deg);
+	}
+	.num{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height:80px;
+		width:80px;
+		font-size:30px;
+		border-radius: 50%;
+		background-color: #fff;
+		text-align:center;
+		color:#2d2d2d;
+		box-shadow:0px 4px 5px 2px rgb(0 0 0 / 30%);
+	}
